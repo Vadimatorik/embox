@@ -22,20 +22,20 @@ angular.module("HttpAdmin", ['ngRoute', 'ui.bootstrap'])
         $http.post('cgi-bin/http_admin_backend', post_data);
     };
 }])
-.controller("DateCtrl", ['$scope', '$http', function($scope, $http) {
+.controller("SystemCtrl", ['$scope', '$http', function($scope, $http) {
+    $scope.version = null;
     $scope.date = null;
-
-    $scope.save = function() {
-        //$http.get('cgi-bin/cgi_cmd_wrapper?c=flash_settings&a=store&a=led').success(function (data) {
-        //   alert('Led configuration saved!');
-        //});
-    };
+    $scope.threads = null;
 
     $scope.update = function() {
         $http.get('cgi-bin/cgi_cmd_wrapper?c=date').then(function (r) {
-            var data = r.data;
-            $scope.date = data;
-            //alert($scope.dates);
+            $scope.date = r.data;
+        });
+        $http.get('cgi-bin/cgi_cmd_wrapper?c=version').then(function (r) {
+            $scope.version = r.data;
+        });
+        $http.get('cgi-bin/cgi_cmd_wrapper?c=thread&a=-s').then(function (r) {
+            $scope.threads = r.data;
         });
     };
 
@@ -46,8 +46,8 @@ angular.module("HttpAdmin", ['ngRoute', 'ui.bootstrap'])
     when('/interfaces', {
         templateUrl: 'partials/interfaces.html',
     }).
-    when('/date', {
-        templateUrl: 'partials/date.html',
+    when('/system', {
+        templateUrl: 'partials/system.html',
     }).
     otherwise({
         redirectTo: '/interfaces'
