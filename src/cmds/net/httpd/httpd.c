@@ -25,7 +25,6 @@
 #	define USE_IP_VER       OPTION_GET(NUMBER,use_ip_ver)
 #	define USE_CGI          OPTION_GET(BOOLEAN,use_cgi)
 #	define USE_REAL_CMD     OPTION_GET(BOOLEAN,use_real_cmd)
-#	define USE_PARALLEL_CGI OPTION_GET(BOOLEAN,use_parallel_cgi)
 #endif /* __EMBUILD_MOD__ */
 
 #define BUFF_SZ     1024
@@ -51,9 +50,7 @@ static int httpd_wait_cgi_child(pid_t target, int opts) {
 
 static void httpd_on_cgi_child(const struct client_info *cinfo, pid_t child) {
 	if (child > 0) {
-	       if (!USE_PARALLEL_CGI) {
-		       httpd_wait_cgi_child(child, 0);
-	       }
+		httpd_wait_cgi_child(child, 0);
 	} else {
 		httpd_header(cinfo, 500, strerror(-child));
 	}
@@ -138,12 +135,6 @@ int main(int argc, char **argv) {
 		}
 		assert(ci.ci_addrlen == sizeof(inaddr));
 		ci.ci_basedir = basedir;
-
-		if (USE_PARALLEL_CGI) {
-			while (0 < httpd_wait_cgi_child(-1, WNOHANG)) {
-				/* wait another one */
-			}
-		}
 
 		httpd_client_process(&ci);
 
