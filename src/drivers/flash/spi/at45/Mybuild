@@ -1,0 +1,18 @@
+package embox.driver.flash.spi.at45
+
+module db641e {
+    option number log_level = 1
+    option number flash_size=0x840000
+    option number block_size=256
+    
+    option number trash_data_address=0x20000000
+    option number spi_id=1
+    option number port_cs=0
+    option number pin_cs=15
+    
+    source "at45db641e.c"
+
+    depends embox.driver.gpio.core
+    depends embox.driver.flash.core
+    depends embox.driver.spi.core    
+}
